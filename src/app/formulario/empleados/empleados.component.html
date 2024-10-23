@@ -1,0 +1,84 @@
+<!-- <h2 class="text-center text-2xl font-semibold mb-6 text-purple-800">Formulario de Registro de Empleados</h2>
+
+<div class="container mx-auto flex justify-between">
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="max-w-md mx-auto p-6 bg-gray-100 border border-gray-400 rounded shadow-lg">
+    <div class="mb-4">
+      <label for="matricula" class="block mb-1 text-base font-medium text-indigo-900">Matrícula</label>
+      <input id="matricula" formControlName="matricula" type="text" class="border rounded-lg w-full p-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-800">
+    </div>
+
+    <div class="mb-4">
+      <label for="nombre" class="block mb-1 text-base font-medium text-indigo-900">Nombre</label>
+      <input id="nombre" formControlName="nombre" type="text" class="border rounded-lg w-full p-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-800">
+    </div>
+
+    <div class="mb-4">
+      <label for="correo" class="block mb-1 text-base font-medium text-indigo-900">Correo</label>
+      <input id="correo" formControlName="correo" type="email" class="border rounded-lg w-full p-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-800">
+    </div>
+
+    <div class="mb-4">
+      <label for="edad" class="block mb-1 text-base font-medium text-indigo-900">Edad</label>
+      <input id="edad" formControlName="edad" type="number" class="border rounded-lg w-full p-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-800">
+    </div>
+
+    <div class="mb-4">
+      <label for="horasTrabajadas" class="block mb-1 text-base font-medium text-indigo-900">Horas Trabajadas</label>
+      <input id="horasTrabajadas" formControlName="horasTrabajadas" type="number" class="border rounded-lg w-full p-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-800">
+    </div>
+
+    <div class="mt-6 flex justify-between">
+      <button type="submit" class="px-4 py-2 bg-purple-700 text-white rounded hover:bg-purple-800">Registrar</button>
+      <button type="button" (click)="subImprime()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Imprimir</button>
+    </div>
+  </form>
+
+  <div class="ml-10 w-3/5">
+    <h3 *ngIf="mostrarTabla" class="text-lg font-semibold text-indigo-900 mb-3">Lista de Empleados</h3>
+
+    <div class="overflow-x-auto">
+      <table *ngIf="mostrarTabla" class="min-w-full bg-white border border-gray-300 rounded-lg">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="py-2 px-4 text-sm text-left font-semibold text-gray-700">Matrícula</th>
+            <th class="py-2 px-4 text-sm text-left font-semibold text-gray-700">Nombre</th>
+            <th class="py-2 px-4 text-sm text-left font-semibold text-gray-700">Correo</th>
+            <th class="py-2 px-4 text-sm text-left font-semibold text-gray-700">Edad</th>
+            <th class="py-2 px-4 text-sm text-left font-semibold text-gray-700">Horas</th>
+            <th class="py-2 px-4 text-sm text-left font-semibold text-gray-700">Pago Horas</th>
+            <th class="py-2 px-4 text-sm text-left font-semibold text-gray-700">Pago Extra</th>
+            <th class="py-2 px-4 text-sm text-left font-semibold text-gray-700">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let empleado of empleados" class="bg-gray-100 border-t">
+            <td class="py-3 px-4">{{ empleado.matricula }}</td>
+            <td class="py-3 px-4">{{ empleado.nombre }}</td>
+            <td class="py-3 px-4">{{ empleado.correo }}</td>
+            <td class="py-3 px-4">{{ empleado.edad }}</td>
+            <td class="py-3 px-4">{{ empleado.horasTrabajadas }}</td>
+            <td class="py-3 px-4">{{ calcularPago(empleado).pagoHorasNormales }}</td>
+            <td class="py-3 px-4">{{ calcularPago(empleado).pagoHorasExtras }}</td>
+            <td class="py-3 px-4">{{ calcularPago(empleado).subTotal }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="mostrarTabla" class="mt-5">
+      <h4 class="text-lg font-semibold text-indigo-900">Total a pagar: {{ calcularTotal() }}</h4>
+    </div>
+
+    <div class="mt-8">
+      <h4 class="text-lg font-semibold mb-2 text-indigo-900">Buscar Empleado</h4>
+      <label for="matriculaAccion" class="block mb-1 text-base font-medium text-indigo-900">Matrícula</label>
+      <input id="matriculaAccion" [(ngModel)]="matriculaAccion" type="text" class="border rounded-lg w-full p-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-800">
+
+      <div class="mt-4 flex space-x-4">
+        <button (click)="modificarMatricula()" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Modificar</button>
+        <button (click)="eliminarMatricula()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+ -->
