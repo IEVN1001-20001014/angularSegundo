@@ -1,104 +1,143 @@
-/* import { Component, OnInit } from '@angular/core';
-import { CommonModule, NgClass, NgStyle } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
-interface RegistroEmpleado {
-  id: string;
-  nombreCompleto: string;
-  email: string;
-  edadEmpleado: number;
-  horasLaboradas: number;
+interface Empleado {
+    matricula: string;
+    nombre: string;
+    correo: string;
+    edad: number;
+    horasTrabajadas: number;
 }
 
 @Component({
-  selector: 'app-registro-empleados',
-  standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, CommonModule],
-  templateUrl: './empleados.component.html',
-  styles: ``
+    selector: 'app-empleados',
+    standalone: true,
+    imports: [FormsModule, CommonModule],
+    templateUrl: './empleados.component.html',
+    styles: ``
 })
-export default class RegistroEmpleadosComponent implements OnInit {
-
-  formularioRegistro!: FormGroup;
-  listaEmpleados: RegistroEmpleado[] = [];
-  mostrarLista: boolean = false;
-  empleadoModificar: string | null = null;
-  idAccion: string = '';  
-
-  constructor(private fb: FormBuilder) {}
-
-  ngOnInit(): void {
-    this.formularioRegistro = this.fb.group({
-      id: [''],
-      nombreCompleto: [''],
-      email: [''],
-      edadEmpleado: [''],
-      horasLaboradas: ['']
-    });
-
-    const empleadosGuardados = localStorage.getItem('listaEmpleados');
-    if (empleadosGuardados) {
-      this.listaEmpleados = JSON.parse(empleadosGuardados);
-    }
-  }
-
-  procesarFormulario(): void {
-    const empleadoNuevo: RegistroEmpleado = {
-      id: this.formularioRegistro.value.id,
-      nombreCompleto: this.formularioRegistro.value.nombreCompleto,
-      email: this.formularioRegistro.value.email,
-      edadEmpleado: this.formularioRegistro.value.edadEmpleado,
-      horasLaboradas: this.formularioRegistro.value.horasLaboradas
+export default class EmpleadosComponent {
+    empleado: Empleado = {
+        matricula: '',
+        nombre: '',
+        correo: '',
+        edad: 0,
+        horasTrabajadas: 0,
     };
 
-    if (this.empleadoModificar) {
-      this.listaEmpleados = this.listaEmpleados.map(emp =>
-        emp.id === this.empleadoModificar ? empleadoNuevo : emp
-      );
-      this.empleadoModificar = null;
-    } else {
-      this.listaEmpleados.push(empleadoNuevo);
+    empleados: Empleado[] = [];
+    mostrarTabla: boolean = false;
+    empleadoSeleccionado: Empleado | null = null;
+
+    constructor() {
+        this.cargarEmpleados();
     }
 
-    localStorage.setItem('listaEmpleados', JSON.stringify(this.listaEmpleados));
-    this.formularioRegistro.reset();
-  }
+    agregarEmpleado(event: Event) {
+        event.preventDefault();
+        
+        const index = this.empleados.findIndex(emp => emp.matricula === this.empleado.matricula);
+        if (index !== -1) {
+            alert('Ya existe un empleado con esta matrícula.');
+            return;
+        }
 
-  calcularCompensacion(empleado: RegistroEmpleado): { salarioTotal: number, extras: number, normales: number } {
-    const horasNormales = empleado.horasLaboradas > 40 ? 40 : empleado.horasLaboradas;
-    const horasExtras = empleado.horasLaboradas > 40 ? empleado.horasLaboradas - 40 : 0;
-
-    const salarioNormales = horasNormales * 70;
-    const salarioExtras = horasExtras * 140;  
-    const salarioTotal = salarioNormales + salarioExtras;
-
-    return { salarioTotal, extras: salarioExtras, normales: salarioNormales };
-  }
-
-  calcularPagoTotal(): number {
-    return this.listaEmpleados.reduce((total, empleado) => total + 
-    this.calcularCompensacion(empleado).salarioTotal, 0);
-  }
-
-  mostrarListaEmpleados(): void {
-    this.mostrarLista = true;
-    const empleadosGuardados = localStorage.getItem('listaEmpleados');
-    if (empleadosGuardados) {
-      this.listaEmpleados = JSON.parse(empleadosGuardados);
+        // Agregar el nuevo empleado
+        this.empleados.push({ ...this.empleado });
+        this.guardarEmpleados();
+        this.limpiarFormulario();
     }
-  }
 
-  prepararEdicion(): void {
-    const empleadoSeleccionado = this.listaEmpleados.find(emp => emp.id === this.idAccion);
-    if (empleadoSeleccionado) {
-      this.formularioRegistro.patchValue(empleadoSeleccionado);
-      this.empleadoModificar = this.idAccion;
+    modificarEmpleado() {
+        if (this.empleadoSeleccionado) {
+            const index = this.empleados.findIndex(emp => emp.matricula === this.empleadoSeleccionado?.matricula);
+            if (index !== -1) {
+                this.empleados[index] = { ...this.empleado }; 
+                this.guardarEmpleados();
+                this.limpiarFormulario();
+                this.empleadoSeleccionado = null; 
+            } else {
+                alert('Empleado no encontrado para modificar.');
+            }
+        } else {
+            alert('Por favor, seleccione un empleado para modificar.');
+        }
     }
-  }
 
-  eliminarEmpleado(): void {
-    this.listaEmpleados = this.listaEmpleados.filter(emp => emp.id !== this.idAccion);
-    localStorage.setItem('listaEmpleados', JSON.stringify(this.listaEmpleados));
-  }
+    seleccionarEmpleado(empleado: Empleado) {
+        this.empleadoSeleccionado = empleado; 
+        this.empleado = { ...empleado }; 
+    }
+
+    guardarEmpleados() {
+        localStorage.setItem('empleados', JSON.stringify(this.empleados));
+    }
+
+    cargarEmpleados() {
+        const data = localStorage.getItem('empleados');
+        if (data) {
+            this.empleados = JSON.parse(data);
+        }
+    }
+
+    eliminarEmpleado() {
+        if (this.empleadoSeleccionado) {
+            this.empleados = this.empleados.filter(emp => emp.matricula !== this.empleadoSeleccionado!.matricula);
+            this.guardarEmpleados();
+            this.limpiarFormulario();
+            this.empleadoSeleccionado = null;
+        } else {
+            alert('Por favor, seleccione un empleado para eliminar.');
+        }
+    }
+
+    calcularHorasPorPagar(horasTrabajadas: number): number {
+        const tarifaRegular = 70; 
+        const horasRegulares = Math.min(horasTrabajadas, 40); 
+        return horasRegulares * tarifaRegular; 
+    }
+    
+
+    calcularHorasExtras(horasTrabajadas: number): number {
+        const tarifaExtra = 140; 
+        const horasExtras = horasTrabajadas > 40 ? horasTrabajadas - 40 : 0; 
+        return horasExtras * tarifaExtra; 
+    }
+    
+    calcularMonto(horasTrabajadas: number): number {
+        const montoHorasRegulares = this.calcularHorasPorPagar(horasTrabajadas); 
+        const montoHorasExtras = this.calcularHorasExtras(horasTrabajadas); 
+    
+        return montoHorasRegulares + montoHorasExtras; 
+    }
+    
+
+    calcularTotalAPagar(): number {
+        let totalAPagar = 0;
+        for (const empleado of this.empleados) {
+            totalAPagar += this.calcularMonto(empleado.horasTrabajadas);
+        }
+        return totalAPagar;
+    }
+
+    imprimirEmpleados() {
+        this.mostrarTabla = true;
+        console.log(`Total a pagar por todos los empleados: $${this.calcularTotalAPagar()}`);
+    }
+
+    ocultarTabla() {
+        this.mostrarTabla = false;
+    }
+
+    limpiarFormulario() {
+        this.empleado = {
+            matricula: '',
+            nombre: '',
+            correo: '',
+            edad: 0,
+            horasTrabajadas: 0,
+        };
+        this.empleadoSeleccionado = null; 
+    }
 }
- */
